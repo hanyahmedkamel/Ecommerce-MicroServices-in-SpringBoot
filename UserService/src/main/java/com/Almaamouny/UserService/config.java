@@ -30,7 +30,8 @@ public class config {
     public SecurityFilterChain SecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/authenticate").permitAll().requestMatchers(HttpMethod.POST,"/user").permitAll()
+                        .requestMatchers("/authenticate").permitAll().requestMatchers(HttpMethod.POST,"/user").permitAll().
+                        requestMatchers(HttpMethod.POST,"/activate").permitAll()
                         .anyRequest().authenticated()
                 );
         http.sessionManagement(s->s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

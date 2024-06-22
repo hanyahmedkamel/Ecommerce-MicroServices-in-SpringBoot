@@ -17,11 +17,14 @@ import java.util.Map;
 @Configuration
 public class KafkaConfig {
 
+    private static final String BOOTSTRAP_SERVERS = "localhost:9092";
+    private static final String GROUP_ID = "groupId";
+
     @Bean
-    public ConsumerFactory<String, OrderSuccessful> consumerFactory() {
+    public ConsumerFactory<String, OrderSuccessful> orderSuccessfulConsumerFactory() {
         Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "groupId");
+        configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
+        configProps.put(ConsumerConfig.GROUP_ID_CONFIG, GROUP_ID);
         configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class.getName());
 
@@ -33,17 +36,17 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, OrderSuccessful> kafkaListenerContainerFactory() {
+    public ConcurrentKafkaListenerContainerFactory<String, OrderSuccessful> orderSuccessfulKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, OrderSuccessful> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(orderSuccessfulConsumerFactory());
         return factory;
     }
 
     @Bean
-    public ConsumerFactory<String, PaymentSuccess> consumerFactory2() {
+    public ConsumerFactory<String, PaymentSuccess> paymentSuccessConsumerFactory() {
         Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "groupId");
+        configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
+        configProps.put(ConsumerConfig.GROUP_ID_CONFIG, GROUP_ID);
         configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class.getName());
 
@@ -55,19 +58,45 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, PaymentSuccess> kafkaListenerContainerFactory2() {
+    public ConcurrentKafkaListenerContainerFactory<String, PaymentSuccess> paymentSuccessKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, PaymentSuccess> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory2());
+        factory.setConsumerFactory(paymentSuccessConsumerFactory());
         return factory;
     }
 
     @Bean
-    public NewTopic topic() {
+    public ConsumerFactory<String, Integer> integerConsumerFactory() {
+        Map<String, Object> configProps = new HashMap<>();
+        configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
+        configProps.put(ConsumerConfig.GROUP_ID_CONFIG, GROUP_ID);
+        configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+
+        JsonDeserializer<Integer> deserializer = new JsonDeserializer<>(Integer.class);
+        deserializer.setRemoveTypeHeaders(false);
+
+        return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(), deserializer);
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, Integer> integerKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, Integer> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(integerConsumerFactory());
+        return factory;
+    }
+
+    @Bean
+    public NewTopic orderPlacedTopic() {
         return new NewTopic("OrderPlaced", 1, (short) 1);
     }
 
     @Bean
-    public NewTopic topic2() {
+    public NewTopic paymentConfirmationTopic() {
         return new NewTopic("PaymentConfirmation", 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic activateAccountTopic() {
+        return new NewTopic("ActivateAccount", 1, (short) 1);
     }
 }

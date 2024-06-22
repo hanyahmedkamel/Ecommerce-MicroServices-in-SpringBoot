@@ -12,7 +12,7 @@ public class OrderListener {
     @Autowired
     EmailService service;
 
-    @KafkaListener(topics = "OrderPlaced", groupId = "groupId", containerFactory = "kafkaListenerContainerFactory")
+    @KafkaListener(topics = "OrderPlaced", groupId = "groupId", containerFactory = "orderSuccessfulKafkaListenerContainerFactory")
     public void listen(OrderSuccessful orderSuccessful) {
         StringBuilder text = new StringBuilder("You have ordered ");
         List<OrderItemResponse> items = orderSuccessful.orderItems();

@@ -9,7 +9,7 @@ public class PaymentListener {
 
     @Autowired
     EmailService service;
-    @KafkaListener(topics = "PaymentConfirmation", groupId = "groupId", containerFactory = "kafkaListenerContainerFactory2")
+    @KafkaListener(topics = "PaymentConfirmation", groupId = "groupId", containerFactory = "paymentSuccessKafkaListenerContainerFactory")
     public void listen(PaymentSuccess paymentSuccess) {
 
         service.sendSimpleEmail("hanykamel806@gmail.com","Thank you for purchase from our end  ","you have paid "+paymentSuccess.amount().toString()+"$ by "+paymentSuccess.paymentMethod());
