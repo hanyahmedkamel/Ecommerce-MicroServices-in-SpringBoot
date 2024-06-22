@@ -29,7 +29,7 @@ public class config {
     public SecurityFilterChain SecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET,"/products").permitAll().requestMatchers(HttpMethod.POST,"/product").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/products").permitAll().requestMatchers(HttpMethod.GET,"/product/{id}").permitAll()
                         .anyRequest().authenticated()
                 );
         http.sessionManagement(s->s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
