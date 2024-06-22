@@ -1,0 +1,27 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: ApiGateway
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: PRODUCT-SERVICE
+          uri: lb://PRODUCT-SERVICE/Product/api
+          predicates:
+            - Path=/Product/api/**
+
+        - id: USERSERVICE
+          uri: lb://USERSERVICE/User/api
+          predicates:
+            - Path=/User/api/**
+
+        - id: ORDERSERVICE
+          uri: lb://ORDERSERVICE/Order/api
+          predicates:
+            - Path=/Order/api/**
